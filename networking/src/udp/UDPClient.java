@@ -28,18 +28,7 @@ public class UDPClient extends Thread{
 
     @Override
     public void run() {
-        buffer = "login".getBytes();
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
-
-        try {
-            socket.send(packet);
-            buffer = new byte[256];
-            packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
-            socket.receive(packet);
-            System.out.println(new String(packet.getData(), 0, packet.getLength()));
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        sendAndReceiveMessage("login");
 
         for (int i = 0; i < 10; i++){
             try {
@@ -47,32 +36,10 @@ public class UDPClient extends Thread{
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            buffer = ("message " + i).getBytes();
-            packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
+            sendAndReceiveMessage("message " + i);
 
-            try {
-                socket.send(packet);
-                buffer = new byte[256];
-                packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
-                socket.receive(packet);
-                System.out.println(new String(packet.getData(), 0, packet.getLength()));
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
         }
-
-        buffer = "logout".getBytes();
-        packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
-
-        try {
-            socket.send(packet);
-            buffer = new byte[256];
-            packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
-            socket.receive(packet);
-            System.out.println(new String(packet.getData(), 0, packet.getLength()));
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        sendAndReceiveMessage("logout");
 
         /*
         Scanner scanner = new Scanner(System.in);
@@ -100,7 +67,21 @@ public class UDPClient extends Thread{
         */
     }
 
+    private void sendAndReceiveMessage(String message){
+        byte[] buffer = message.getBytes();
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
 
+        try {
+            socket.send(packet);
+            buffer = new byte[256];
+            packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
+            socket.receive(packet);
+            System.out.println(new String(packet.getData(), 0, packet.getLength()));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+    }
 
     public static void main(String[] args) {
         String serverName = System.getenv("SERVER_NAME");

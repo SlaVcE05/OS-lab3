@@ -1,18 +1,16 @@
 package tcp;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Worker extends Thread {
 
     private Socket socket;
-    private static File messageCounterFile;
-
     public Worker(Socket socket) {
         this.socket = socket;
-        messageCounterFile = new File("../../serverData/counter.txt");
     }
-
     @Override
     public void run() {
         BufferedReader reader = null;
@@ -46,7 +44,6 @@ public class Worker extends Thread {
                     break;
                 }
 
-//                incrementCounter();
                 TCPServer.incrementMessageCounter();
                 writer.write("echo: " + message + "\n");
                 writer.flush();
@@ -65,23 +62,4 @@ public class Worker extends Thread {
             }
         }
     }
-
-    private synchronized static void incrementCounter() throws IOException {
-        RandomAccessFile messageCounterRaf = new RandomAccessFile(messageCounterFile, "rw");
-        Integer currentClientsCounter = null;
-        try {
-            currentClientsCounter = messageCounterRaf.readInt();
-            System.out.printf("Total Number of Messages: %d\n",currentClientsCounter);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (currentClientsCounter == null) {
-            currentClientsCounter = 0;
-        }
-        currentClientsCounter++;
-        messageCounterRaf.seek(0);
-        messageCounterRaf.writeInt(currentClientsCounter);
-        messageCounterRaf.close();
-    }
-
 }

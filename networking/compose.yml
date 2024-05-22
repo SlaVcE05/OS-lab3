@@ -27,8 +27,6 @@ services:
       - tcp-network
     ports:
       - 7000:7000
-    volumes:
-      - ./src/tcp/serverData/:/usr/serverData/
   tcp-client:
     build:
       context: src/tcp

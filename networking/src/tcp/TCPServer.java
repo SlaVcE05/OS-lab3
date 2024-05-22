@@ -1,37 +1,25 @@
 package tcp;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.net.UnknownHostException;
 
 public class TCPServer extends Thread{
 
     private int port;
     private static int messageCounter = 0;
-    private static Lock counterLock = new ReentrantLock();
-
     public TCPServer(int port) {
         this.port = port;
     }
 
-    public static void incrementMessageCounter() {
-        counterLock.lock();
-        try {
-            messageCounter++;
-        } finally {
-            counterLock.unlock();
-        }
+    public synchronized static void incrementMessageCounter() {
+        messageCounter++;
     }
 
-    public static int getMessageCount() {
-        counterLock.lock();
-        try {
-            return messageCounter;
-        } finally {
-            counterLock.unlock();
-        }
+    public synchronized static int getMessageCount() {
+        return messageCounter;
     }
 
     @Override
@@ -59,6 +47,8 @@ public class TCPServer extends Thread{
         }
 
     }
+
+
 
     public static void main(String[] args) {
         TCPServer server = new TCPServer(7000);

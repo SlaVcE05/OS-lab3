@@ -26,7 +26,6 @@ public class TCPClient extends Thread {
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 
-
             String input = "login";
             writer.write(input + "\n");
             writer.flush();
