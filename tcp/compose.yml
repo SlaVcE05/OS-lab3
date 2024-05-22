@@ -19,7 +19,7 @@ services:
     depends_on:
       - server
     deploy:
-      replicas: 100
+      replicas: 10
 
 networks:
   login-network:

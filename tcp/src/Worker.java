@@ -28,12 +28,11 @@ public class Worker extends Thread {
                 return;
             }
 
-            // Send logged in confirmation
+
             writer.write("logged in\n");
             writer.flush();
             System.out.println("SERVER: logged in - " + socket.getInetAddress()+ ":" + socket.getPort());
 
-            // Continue processing messages from the client
             String message;
             while ((message = reader.readLine()) != null) {
 
@@ -45,7 +44,7 @@ public class Worker extends Thread {
                     break;
                 }
 
-                incrementCounter();
+//                incrementCounter();
                 TCPServer.incrementMessageCounter();
                 writer.write("echo: " + message + "\n");
                 writer.flush();

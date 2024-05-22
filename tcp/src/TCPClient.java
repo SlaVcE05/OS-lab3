@@ -24,7 +24,7 @@ public class TCPClient extends Thread {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-//            Scanner scanner = new Scanner(System.in);
+/*
 
             String input = "login";
             writer.write(input + "\n");
@@ -38,7 +38,7 @@ public class TCPClient extends Thread {
 
             System.out.println(serverResponse);
 
-            for (int i = 0; i< 10; i++){
+            for (int i = 0; i< 1000; i++){
                 input = "message " + i;
                 writer.write(input + "\n");
                 writer.flush();
@@ -49,8 +49,21 @@ public class TCPClient extends Thread {
 
             writer.write("logout\n");
             writer.flush();
+*/
 
-/*            while (true) {
+            Scanner scanner = new Scanner(System.in);
+            String input = scanner.nextLine();
+            writer.write(input + "\n");
+            writer.flush();
+
+            String serverResponse = reader.readLine();
+            if (!"logged in".equals(serverResponse)) {
+                System.out.println("Login failed");
+                return;
+            }
+            System.out.println(serverResponse);
+
+            while (true) {
 
                 input = scanner.nextLine();
                 writer.write(input + "\n");
@@ -64,7 +77,7 @@ public class TCPClient extends Thread {
                     break;
                 }
             }
-*/
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -95,8 +108,8 @@ public class TCPClient extends Thread {
     }
 
     public static void main(String[] args) {
-        String serverName = System.getenv("SERVER_NAME");
-        String serverPort = System.getenv("SERVER_PORT");
+        String serverName = "localhost";//System.getenv("SERVER_NAME");
+        String serverPort = "7000"; //System.getenv("SERVER_PORT");
         TCPClient client = new TCPClient(serverName, Integer.parseInt(serverPort));
         client.start();
     }
