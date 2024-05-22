@@ -1,0 +1,50 @@
+services:
+  udp-server:
+    build:
+      context: src/udp
+      dockerfile: Dockerfile-server
+    networks:
+      - udp-network
+  udp-client:
+    build:
+      context: src/udp
+      dockerfile: Dockerfile-client
+    networks:
+      - udp-network
+    environment:
+      - SERVER_NAME=udp-server
+      - SERVER_PORT=6000
+    depends_on:
+      - udp-server
+    deploy:
+      replicas: 5
+
+  tcp-server:
+    build:
+      context: src/tcp
+      dockerfile: Dockerfile-server
+    networks:
+      - tcp-network
+    ports:
+      - 7000:7000
+    volumes:
+      - ./src/tcp/serverData/:/usr/serverData/
+  tcp-client:
+    build:
+      context: src/tcp
+      dockerfile: Dockerfile-client
+    environment:
+      - SERVER_NAME=tcp-server
+      - SERVER_PORT=7000
+    networks:
+      - tcp-network
+    depends_on:
+      - tcp-server
+    deploy:
+      replicas: 5
+
+networks:
+  udp-network:
+    driver: bridge
+  tcp-network:
+    driver: bridge

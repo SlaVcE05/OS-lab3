@@ -1,4 +1,5 @@
-import java.io.File;
+package tcp;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -49,8 +50,6 @@ public class TCPServer extends Thread{
         while (true) {
             Socket socket = null;
             try {
-                //accept metodot e blokiracki
-
                 socket = serverSocket.accept();
             } catch (IOException e) {
                 e.printStackTrace();

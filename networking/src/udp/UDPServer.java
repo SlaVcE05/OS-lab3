@@ -1,3 +1,5 @@
+package udp;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -5,14 +7,14 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
-public class Server extends Thread {
+public class UDPServer extends Thread {
 
     private DatagramSocket socket;
     private byte[] buffer;
 
-    List<InetAddress> logged = new ArrayList<>();
+    List<String> logged = new ArrayList<>();
 
-    public Server(int port) {
+    public UDPServer(int port) {
         try {
             this.socket = new DatagramSocket(port);
         } catch (SocketException e) {
@@ -29,9 +31,7 @@ public class Server extends Thread {
             try {
                 socket.receive(packet);
                 String received = new String(packet.getData(), 0, packet.getLength());
-                System.out.println("RECEIVED: " + received);
-
-                String newMessage = processMessage(received,packet.getAddress());
+                String newMessage = processMessage(received,(packet.getAddress() + ":" + packet.getPort()));
 
                 buffer = newMessage.getBytes();
                 packet = new DatagramPacket(buffer, buffer.length, packet.getAddress(), packet.getPort());
@@ -43,27 +43,29 @@ public class Server extends Thread {
     }
 
 
-    private String processMessage(String message, InetAddress ip){
+    private String processMessage(String message, String ipAndPort){
 
         if (message.equals("login")) {
-            logged.add(ip);
+            logged.add(ipAndPort);
+            System.out.println("SERVER: logged in - " + ipAndPort);
             return "logged in";
         }
 
-        if (message.equals("logout") && logged.contains(ip)) {
-            logged.remove(ip);
+        if (message.equals("logout") && logged.contains(ipAndPort)) {
+            logged.remove(ipAndPort);
+            System.out.println("SERVER: logged out - " + ipAndPort);
             return "logged out ";
         }
 
-        if (logged.contains(ip))
+        if (logged.contains(ipAndPort))
             return "echo- " + message;
 
         return "not logged in";
     }
 
     public static void main(String[] args) {
-        System.out.println("Server is on...");
-        TCPServer server = new TCPServer(4445);
+        System.out.println("udp.Server is on...");
+        UDPServer server = new UDPServer(6000);
         server.start();
     }
 }

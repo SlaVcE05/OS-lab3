@@ -1,0 +1,11 @@
+FROM eclipse-temurin
+
+RUN mkdir /usr/src/tcp
+WORKDIR /usr/src/
+
+COPY TCPClient.java tcp/TCPClient.java
+COPY loop.java tcp/loop.java
+
+RUN javac tcp/*.java
+
+CMD ["java", "tcp.TCPClient"]

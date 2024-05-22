@@ -1,13 +1,14 @@
+package tcp;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Scanner;
+import java.util.Random;
 
 public class TCPClient extends Thread {
     private int serverPort;
     private String serverName;
-
+    Random random = new Random();
     public TCPClient(String serverName, int serverPort) {
         this.serverName = serverName;
         this.serverPort = serverPort;
@@ -24,7 +25,7 @@ public class TCPClient extends Thread {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-/*
+
 
             String input = "login";
             writer.write(input + "\n");
@@ -38,7 +39,8 @@ public class TCPClient extends Thread {
 
             System.out.println(serverResponse);
 
-            for (int i = 0; i< 1000; i++){
+            for (int i = 0; i< 10; i++){
+                Thread.sleep(random.nextInt(4500)+500);
                 input = "message " + i;
                 writer.write(input + "\n");
                 writer.flush();
@@ -49,9 +51,9 @@ public class TCPClient extends Thread {
 
             writer.write("logout\n");
             writer.flush();
-*/
 
-            Scanner scanner = new Scanner(System.in);
+
+/*            Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
             writer.write(input + "\n");
             writer.flush();
@@ -76,10 +78,12 @@ public class TCPClient extends Thread {
                 if ("logout".equals(input)) {
                     break;
                 }
-            }
+            }*/
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             if (reader != null) {
                 try {
@@ -108,8 +112,8 @@ public class TCPClient extends Thread {
     }
 
     public static void main(String[] args) {
-        String serverName = "localhost";//System.getenv("SERVER_NAME");
-        String serverPort = "7000"; //System.getenv("SERVER_PORT");
+        String serverName = System.getenv("SERVER_NAME");
+        String serverPort = System.getenv("SERVER_PORT");
         TCPClient client = new TCPClient(serverName, Integer.parseInt(serverPort));
         client.start();
     }
