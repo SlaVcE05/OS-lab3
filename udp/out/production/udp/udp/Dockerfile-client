@@ -1,0 +1,10 @@
+FROM eclipse-temurin
+
+RUN mkdir /usr/src/client
+WORKDIR /usr/src/client
+
+COPY Client.java udp.TCPClient.java
+
+RUN javac udp.TCPClient.java
+
+CMD ["java", "udp.TCPClient"]

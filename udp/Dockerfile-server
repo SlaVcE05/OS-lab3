@@ -1,0 +1,10 @@
+FROM eclipse-temurin
+
+RUN mkdir /usr/src/server
+WORKDIR /usr/src/server
+
+COPY src/Server.java Server.java
+
+RUN javac Server.java
+
+CMD ["java", "Server"]
